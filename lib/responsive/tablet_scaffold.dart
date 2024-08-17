@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mousike/constants.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:mousike/components/mydrawer.dart';
 import '../util/my_box.dart';
 import '../util/my_tile.dart';
 
@@ -14,9 +15,30 @@ class _TabletScaffoldState extends State<TabletScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: defaultBackgroundColor,
-      appBar: myAppBar,
-      drawer: myDrawer,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        title: const Text('MOUSIKE'),
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              icon: const Icon(Icons.menu),
+              color: Theme.of(context).colorScheme.inversePrimary,
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
+        titleSpacing: 20,
+        titleTextStyle: TextStyle(
+          color: Theme.of(context).colorScheme.inversePrimary,
+          fontSize: 24,
+          fontFamily: GoogleFonts.pacifico().fontFamily,
+        ),
+        centerTitle: false,
+      ),
+      drawer: const MyDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
