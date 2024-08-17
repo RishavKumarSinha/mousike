@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mousike/playlist_page.dart';
 import 'package:mousike/settings_page.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -54,6 +55,15 @@ class MyDrawer extends StatelessWidget {
                   'P L A Y L I S T',
                   style: drawerTextColor,
                 ),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PlaylistPage(),
+                      )
+                  );
+                },
               ),
             ),
             Padding(
