@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mousike/models/playlist_provider.dart';
 import 'package:mousike/responsive/mobile_scaffold.dart'; 
 import 'package:mousike/responsive/tablet_scaffold.dart';
@@ -8,6 +9,10 @@ import 'package:mousike/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp
+  ]);
   runApp(
     MultiProvider(providers: [
       ChangeNotifierProvider(create: (context) => ThemeProvider()),
