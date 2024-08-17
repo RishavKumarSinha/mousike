@@ -10,7 +10,7 @@ class MyTile extends StatelessWidget {
       child: Container(
         height: 78,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8), color: Colors.grey[200]),
+            borderRadius: BorderRadius.circular(8), color: Theme.of(context).colorScheme.secondary),
       ),
     );
   }
