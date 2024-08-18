@@ -39,7 +39,7 @@ class _SearchScreenState extends State<SearchScreen> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const ResponsiveLayout(
+                builder: (context) => ResponsiveLayout(
                   mobileScaffold: MobileScaffold(),
                   tabletScaffold: TabletScaffold(),
                   desktopScaffold: DesktopScaffold(),

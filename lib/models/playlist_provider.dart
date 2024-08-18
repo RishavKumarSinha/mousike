@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 
 class PlaylistProvider extends ChangeNotifier {
   final List<Song> _playlist = [];
+  bool _hasCelestialAdded = false;
   int? _currentSongIndex;
   final AudioPlayer _audioPlayer = AudioPlayer();
   Duration _currentDuration = Duration.zero;
@@ -14,6 +15,7 @@ class PlaylistProvider extends ChangeNotifier {
   List<Song> _favoriteSongs = [];
 
   List<Song> get playlist => _playlist;
+  
   List<Song> get favoriteSongs => _favoriteSongs;
   int? get currentSongIndex => _currentSongIndex;
   Duration get currentDuration => _currentDuration;
@@ -25,38 +27,75 @@ class PlaylistProvider extends ChangeNotifier {
   StreamSubscription? _completionSubscription;
 
   void addSongToPlaylist(Song song) {
-    _playlist.add(song);
-    if (_currentSongIndex == null) {
-      _currentSongIndex = 0;
+    if (!_playlist.contains(song)) {
+      _playlist.add(song);
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   void play() async {
-    if (_playlist.isNotEmpty && _currentSongIndex != null) {
-      final String path = _playlist[_currentSongIndex!].audioPath;
-      try {
-        await _audioPlayer.stop();
+  if (_playlist.isNotEmpty && _currentSongIndex != null) {
+    final Song song = _playlist[_currentSongIndex!];
+    final String path = song.audioPath;
+
+    try {
+      await _audioPlayer.stop();
+
+      // Determine whether to use AssetSource or UrlSource
+      if (path.startsWith('http') || path.startsWith('https')) {
+        // If the path is a URL
         await _audioPlayer.play(UrlSource(path));
-        _isPlaying = true;
-        notifyListeners();
-      } catch (e) {
-        print('Error during playback: $e');
+      } else {
+        // If the path is a local asset
+        await _audioPlayer.play(AssetSource(path));
       }
-    } else if (_playlist.isNotEmpty) {
-      // If _currentSongIndex is null, set it to the first song and play it
-      _currentSongIndex = 0;
-      final String path = _playlist[_currentSongIndex!].audioPath;
-      try {
-        await _audioPlayer.stop();
+
+      _isPlaying = true;
+      notifyListeners();
+    } catch (e) {
+      print('Error during playback: $e');
+    }
+  } else if (_playlist.isNotEmpty) {
+    // If _currentSongIndex is null, set it to the first song and play it
+    _currentSongIndex = 0;
+    final Song song = _playlist[_currentSongIndex!];
+    final String path = song.audioPath;
+
+    try {
+      await _audioPlayer.stop();
+
+      // Determine whether to use AssetSource or UrlSource
+      if (path.startsWith('http') || path.startsWith('https')) {
+        // If the path is a URL
         await _audioPlayer.play(UrlSource(path));
-        _isPlaying = true;
-        notifyListeners();
-      } catch (e) {
-        print('Error during playback: $e');
+      } else {
+        // If the path is a local asset
+        await _audioPlayer.play(AssetSource(path));
       }
+
+      _isPlaying = true;
+      notifyListeners();
+    } catch (e) {
+      print('Error during playback: $e');
     }
   }
+}
+
+
+  void addCelestialSongIfNotAdded() {
+  if (!_hasCelestialAdded) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final celestialSong = Song(
+        songName: "Celestial",
+        artistName: "Ed Sheeran",
+        albumArtImagePath: 'assets/images/pokemon.png',
+        audioPath: 'audio/celestial.mp3',
+      );
+      addSongToPlaylist(celestialSong);
+      _hasCelestialAdded = true; // Update the flag
+    });
+  }
+}
 
   void pause() async {
     await _audioPlayer.pause();
@@ -99,17 +138,18 @@ class PlaylistProvider extends ChangeNotifier {
   }
 
   void playNextSong() {
-    if (_currentSongIndex != null) {
+    if (_currentSongIndex != null && _playlist.isNotEmpty) {
       if (_currentSongIndex! < _playlist.length - 1) {
         currentSongIndex = _currentSongIndex! + 1;
       } else {
         currentSongIndex = 0;
       }
-      play(); // Automatically play the next song
     }
   }
 
   void playPreviousSong() async {
+    if (_playlist.isEmpty || _currentSongIndex == null) return;
+
     if (_currentDuration.inSeconds > 2) {
       await _audioPlayer.seek(Duration.zero);
     } else {
@@ -118,7 +158,6 @@ class PlaylistProvider extends ChangeNotifier {
       } else {
         currentSongIndex = _playlist.length - 1;
       }
-      play(); // Automatically play the previous song
     }
   }
 
@@ -149,6 +188,5 @@ class PlaylistProvider extends ChangeNotifier {
     if (_currentSongIndex != null) {
       play();
     }
-    notifyListeners();
   }
 }
