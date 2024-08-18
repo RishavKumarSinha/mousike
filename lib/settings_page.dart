@@ -21,7 +21,7 @@ class SettingsPage extends StatelessWidget {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const ResponsiveLayout(
+                builder: (context) => ResponsiveLayout(
                   mobileScaffold: MobileScaffold(),
                   tabletScaffold: TabletScaffold(),
                   desktopScaffold: DesktopScaffold(),

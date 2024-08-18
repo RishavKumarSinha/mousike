@@ -22,6 +22,9 @@ class _PlaylistPageState extends State<PlaylistPage> {
   void initState() {
     super.initState();
     playlistProvider = Provider.of<PlaylistProvider>(context, listen: false);
+    
+    // Add the hardcoded "Celestial" song if not already added
+    playlistProvider.addCelestialSongIfNotAdded();
   }
 
   void goToSong(int index) {
@@ -37,9 +40,6 @@ class _PlaylistPageState extends State<PlaylistPage> {
     );
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +54,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const ResponsiveLayout(
+                builder: (context) => ResponsiveLayout(
                   mobileScaffold: MobileScaffold(),
                   tabletScaffold: TabletScaffold(),
                   desktopScaffold: DesktopScaffold(),
@@ -126,17 +126,17 @@ class _PlaylistPageState extends State<PlaylistPage> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Confirm Deletion'),
-                          content: Text('Are you sure you want to delete this song from the playlist?'),
+                          title: Text('Confirm Deletion',style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),),
+                          content: Text('Are you sure you want to delete this song from the playlist?',style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),),
                           actions: [
                             TextButton(
-                              child: Text('Cancel'),
+                              child: Text('Cancel',style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),),
                               onPressed: () {
                                 Navigator.of(context).pop(); // Dismiss the dialog
                               },
                             ),
                             TextButton(
-                              child: Text('Delete'),
+                              child: Text('Delete',style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),),
                               onPressed: () {
                                 playlistProvider.playlist.removeAt(index);
                                 Navigator.of(context).pop(); // Dismiss the dialog
