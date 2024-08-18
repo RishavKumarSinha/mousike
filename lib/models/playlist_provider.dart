@@ -1,46 +1,62 @@
-import 'package:audioplayers/audioplayers.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mousike/models/song.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class PlaylistProvider extends ChangeNotifier {
-  final List<Song> _playlist = [
-    Song(
-      songName: "Celestial",
-      artistName: "Ed Sheeran",
-      albumArtImagePath: "assets/images/pokemon.png",
-      audioPath: "audio/celestial.mp3",
-    ),
-  ];
-
+  final List<Song> _playlist = [];
   int? _currentSongIndex;
   final AudioPlayer _audioPlayer = AudioPlayer();
   Duration _currentDuration = Duration.zero;
   Duration _totalDuration = Duration.zero;
   bool _isPlaying = false;
 
-  PlaylistProvider() {
-    listenToDuration();
-    if (_playlist.isNotEmpty) {
-      _currentSongIndex = 0; // Initialize the index to the first song in the playlist
+  List<Song> _favoriteSongs = [];
+
+  List<Song> get playlist => _playlist;
+  List<Song> get favoriteSongs => _favoriteSongs;
+  int? get currentSongIndex => _currentSongIndex;
+  Duration get currentDuration => _currentDuration;
+  Duration get totalDuration => _totalDuration;
+  bool get isPlaying => _isPlaying;
+
+  StreamSubscription? _durationSubscription;
+  StreamSubscription? _positionSubscription;
+  StreamSubscription? _completionSubscription;
+
+  void addSongToPlaylist(Song song) {
+    _playlist.add(song);
+    if (_currentSongIndex == null) {
+      _currentSongIndex = 0;
     }
+    notifyListeners();
   }
 
   void play() async {
-    if (_currentSongIndex != null) {
+    if (_playlist.isNotEmpty && _currentSongIndex != null) {
       final String path = _playlist[_currentSongIndex!].audioPath;
-      print('Attempting to play: $path'); // Debugging statement
       try {
         await _audioPlayer.stop();
-        await _audioPlayer.play(AssetSource(path)); // No need to check result
+        await _audioPlayer.play(UrlSource(path));
         _isPlaying = true;
-        print('Playback started successfully');
+        notifyListeners();
       } catch (e) {
         print('Error during playback: $e');
       }
-      notifyListeners();
+    } else if (_playlist.isNotEmpty) {
+      // If _currentSongIndex is null, set it to the first song and play it
+      _currentSongIndex = 0;
+      final String path = _playlist[_currentSongIndex!].audioPath;
+      try {
+        await _audioPlayer.stop();
+        await _audioPlayer.play(UrlSource(path));
+        _isPlaying = true;
+        notifyListeners();
+      } catch (e) {
+        print('Error during playback: $e');
+      }
     }
   }
-
 
   void pause() async {
     await _audioPlayer.pause();
@@ -60,11 +76,26 @@ class PlaylistProvider extends ChangeNotifier {
     } else {
       resume();
     }
-    notifyListeners();
+  }
+
+  void addFavoriteSong(Song song) {
+    if (!_favoriteSongs.contains(song)) {
+      _favoriteSongs.add(song);
+      notifyListeners();
+    }
+  }
+
+  void removeFavoriteSong(Song song) {
+    if (_favoriteSongs.contains(song)) {
+      _favoriteSongs.remove(song);
+      notifyListeners();
+    }
   }
 
   void seek(Duration position) async {
     await _audioPlayer.seek(position);
+    _currentDuration = position;
+    notifyListeners();
   }
 
   void playNextSong() {
@@ -91,35 +122,33 @@ class PlaylistProvider extends ChangeNotifier {
     }
   }
 
-  void listenToDuration() {
-    _audioPlayer.onDurationChanged.listen((newDuration) {
+  void startListening() {
+    _durationSubscription = _audioPlayer.onDurationChanged.listen((newDuration) {
       _totalDuration = newDuration;
       notifyListeners();
     });
 
-    _audioPlayer.onPositionChanged.listen((newPosition) {
+    _positionSubscription = _audioPlayer.onPositionChanged.listen((newPosition) {
       _currentDuration = newPosition;
       notifyListeners();
     });
 
-    _audioPlayer.onPlayerComplete.listen((event) {
+    _completionSubscription = _audioPlayer.onPlayerComplete.listen((event) {
       playNextSong();
     });
   }
 
-  List<Song> get playlist => _playlist;
-  int? get currentSongIndex => _currentSongIndex;
-  bool get isPlaying => _isPlaying;
-  Duration get currentDuration => _currentDuration;
-  Duration get totalDuration => _totalDuration;
+  void stopListening() {
+    _durationSubscription?.cancel();
+    _positionSubscription?.cancel();
+    _completionSubscription?.cancel();
+  }
 
   set currentSongIndex(int? newIndex) {
     _currentSongIndex = newIndex;
-
     if (_currentSongIndex != null) {
       play();
     }
-
     notifyListeners();
   }
 }

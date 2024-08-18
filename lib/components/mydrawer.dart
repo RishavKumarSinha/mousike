@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mousike/playlist_page.dart';
+import 'package:mousike/search_page.dart';
 import 'package:mousike/settings_page.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -77,6 +78,14 @@ class MyDrawer extends StatelessWidget {
                   'S E A R C H',
                   style: drawerTextColor,
                 ),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SearchScreen(),
+                      ));
+                },
               ),
             ),
             Padding(

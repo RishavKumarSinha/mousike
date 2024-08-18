@@ -21,15 +21,24 @@ class _PlaylistPageState extends State<PlaylistPage> {
   @override
   void initState() {
     super.initState();
-
     playlistProvider = Provider.of<PlaylistProvider>(context, listen: false);
   }
 
   void goToSong(int index) {
     playlistProvider.currentSongIndex = index;
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const SongPage()
-    ));
+    
+    // Start playing the song before navigating to the SongPage
+    playlistProvider.play();
+
+    // Navigate to the SongPage
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SongPage()),
+    );
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +46,10 @@ class _PlaylistPageState extends State<PlaylistPage> {
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back,
-              color: Theme.of(context).colorScheme.inversePrimary),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).colorScheme.inversePrimary,
+          ),
           onPressed: () {
             Navigator.pushReplacement(
               context,
@@ -52,27 +63,97 @@ class _PlaylistPageState extends State<PlaylistPage> {
             );
           },
         ),
-        title: Text('P L A Y L I S T',
-            style:
-                TextStyle(color: Theme.of(context).colorScheme.inversePrimary)),
+        title: Text(
+          'P L A Y L I S T',
+          style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
+        ),
       ),
       body: Consumer<PlaylistProvider>(
         builder: (context, value, child) {
           final List<Song> playlist = value.playlist;
 
           return ListView.builder(
-              itemCount: playlist.length,
-              itemBuilder: (context, index) {
-                final Song song = playlist[index];
+            itemCount: playlist.length,
+            itemBuilder: (context, index) {
+              final Song song = playlist[index];
 
-
-                return ListTile(
-                  title: Text(song.songName, style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary)),
-                  subtitle: Text(song.artistName, style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary)),
-                  leading: Image.asset(song.albumArtImagePath),
-                  onTap: () => goToSong(index),
-                );
-              });
+              return ListTile(
+                title: Text(
+                  song.songName,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                  ),
+                ),
+                subtitle: Text(
+                  song.artistName,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                  ),
+                ),
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: song.albumArtImagePath.startsWith('http')
+                      ? Image.network(
+                          song.albumArtImagePath,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Icon(
+                            Icons.broken_image,
+                            size: 50,
+                            color: Theme.of(context).colorScheme.inversePrimary,
+                          ),
+                        )
+                      : Image.asset(
+                          song.albumArtImagePath,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Icon(
+                            Icons.broken_image,
+                            size: 50,
+                            color: Theme.of(context).colorScheme.inversePrimary,
+                          ),
+                        ),
+                ),
+                trailing: IconButton(
+                  icon: Icon(
+                    Icons.delete,
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Confirm Deletion'),
+                          content: Text('Are you sure you want to delete this song from the playlist?'),
+                          actions: [
+                            TextButton(
+                              child: Text('Cancel'),
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Dismiss the dialog
+                              },
+                            ),
+                            TextButton(
+                              child: Text('Delete'),
+                              onPressed: () {
+                                playlistProvider.playlist.removeAt(index);
+                                Navigator.of(context).pop(); // Dismiss the dialog
+                                // Optionally, update the UI
+                                setState(() {});
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+                onTap: () => goToSong(index),
+              );
+            },
+          );
         },
       ),
     );
