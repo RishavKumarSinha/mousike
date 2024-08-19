@@ -55,8 +55,8 @@ class _PlaylistPageState extends State<PlaylistPage> {
               context,
               MaterialPageRoute(
                 builder: (context) => ResponsiveLayout(
-                  mobileScaffold: MobileScaffold(),
-                  tabletScaffold: TabletScaffold(),
+                  mobileScaffold: const MobileScaffold(),
+                  tabletScaffold: const TabletScaffold(),
                   desktopScaffold: DesktopScaffold(),
                 ),
               ),

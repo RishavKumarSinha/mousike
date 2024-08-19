@@ -12,7 +12,7 @@ import 'package:mousike/models/spotify_service.dart';
 void main() {
   final spotifyService = SpotifyService(
     clientId: '8b2ade8c1d404e5f9d0e003c2e7c3ab0',
-    clientSecret: '91a6700f617b4811848d875c4ce58f56',
+    clientSecret: '1d0863f8adc844d2af2df60634b41dfe',
   );
   
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,8 +38,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: ResponsiveLayout(
-        mobileScaffold: MobileScaffold(),
-        tabletScaffold: TabletScaffold(),
+        mobileScaffold: const MobileScaffold(),
+        tabletScaffold: const TabletScaffold(),
         desktopScaffold: DesktopScaffold(),
       ),
       theme: Provider.of<ThemeProvider>(context).themeData,

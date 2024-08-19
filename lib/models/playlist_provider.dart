@@ -12,7 +12,7 @@ class PlaylistProvider extends ChangeNotifier {
   Duration _totalDuration = Duration.zero;
   bool _isPlaying = false;
 
-  List<Song> _favoriteSongs = [];
+  final List<Song> _favoriteSongs = [];
 
   List<Song> get playlist => _playlist;
   
