@@ -38,6 +38,12 @@ dependencies:
   google_fonts: ^4.0.4
   provider: ^6.1.2
   audioplayers: ^5.2.1
+  flutter_launcher_icons: ^0.10.0
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/vinyl.png"
 
 dev_dependencies:
   flutter_test:

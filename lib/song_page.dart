@@ -76,7 +76,7 @@ class _SongPageState extends State<SongPage> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SearchScreen()),
+                              builder: (context) => const SearchScreen()),
                         );
                       },
                       icon: Icon(Icons.arrow_back,
@@ -87,10 +87,13 @@ class _SongPageState extends State<SongPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => PlaylistPage(),
+                            builder: (context) => const PlaylistPage(),
                           ),
                         );
                       },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.all(0),
+                      ),
                       child: Text(
                         "P L A Y L I S T",
                         style: TextStyle(
@@ -98,9 +101,6 @@ class _SongPageState extends State<SongPage> {
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
-                      ),
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.all(0),
                       ),
                     ),
                   ],

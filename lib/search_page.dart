@@ -10,6 +10,8 @@ import 'package:mousike/models/song.dart';
 import 'song_page.dart';
 
 class SearchScreen extends StatefulWidget {
+  const SearchScreen({super.key});
+
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
@@ -40,8 +42,8 @@ class _SearchScreenState extends State<SearchScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) => ResponsiveLayout(
-                  mobileScaffold: MobileScaffold(),
-                  tabletScaffold: TabletScaffold(),
+                  mobileScaffold: const MobileScaffold(),
+                  tabletScaffold: const TabletScaffold(),
                   desktopScaffold: DesktopScaffold(),
                 ),
               ),
@@ -107,7 +109,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SongPage(),
+                          builder: (context) => const SongPage(),
                         ),
                       );
                     },
