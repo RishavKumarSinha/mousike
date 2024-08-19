@@ -12,7 +12,7 @@ import 'package:mousike/models/spotify_service.dart';
 void main() {
   final spotifyService = SpotifyService(
     clientId: '8b2ade8c1d404e5f9d0e003c2e7c3ab0',
-    clientSecret: '1d0863f8adc844d2af2df60634b41dfe',
+    clientSecret: 'd9d4d8f0178b4b52ab3de5342b9a39b5',
   );
   
   WidgetsFlutterBinding.ensureInitialized();
