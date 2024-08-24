@@ -5,6 +5,7 @@ Welcome to Mousike Repository! This is a flutter music app created as part of my
 - **Drawer:** Material Design Panel to navigate easily through the app.
 - **Music Player:** Implementation of basic functionalities like play, pause, seek, play next song & play previous song.
 - **Spotify API:** Integration with Spotify API to fetch song name, artist name, song, song length from Spotify.
+- **Responsive App:** Completely Responsible with both Mobile & Desktop view.
 - **Playlist:** Ability to save your favourite songs in the playlist via searching them up.
 - **User Friendly UI:** Simple, User Friendly UI Design of the Music app.
 - **Themes:** Additional option of Light Mode/Dark Mode to suit your needs with Images changing to corresponding theme.
